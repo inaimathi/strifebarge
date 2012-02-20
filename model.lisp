@@ -11,6 +11,11 @@
 (defclass cruiser (ship) ((space-count :initform 3)))
 (defclass destroyer (ship) ((space-count :initform 2)))
 
+(defclass move ()
+  ((player :reader player :initarg :player)
+   (x :reader x :initarg :x)
+   (y :reader y :initarg :y)))
+
 (defclass player ()
   ((score :accessor score :initform 0)
    (sunken :accessor sunken :initarg :sunken)

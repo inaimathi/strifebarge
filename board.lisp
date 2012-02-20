@@ -42,8 +42,8 @@ Each cell is independant (which is why the board isn't built with make-list)"
   "Returns a board object. 
 A board is both a ship-placement map and a moves-map.
 The first tracks ship positions, the second tracks what shots have been taken already."
-  (let* ((width (+ 10 (* 2 (length list-of-ships))))
-	 (height (+ 10 (* 2 (length list-of-ships))))
+  (let* ((width (+ 5 (* 2 (length list-of-ships))))
+	 (height (+ 5 (* 2 (length list-of-ships))))
 	 (board (empty-board width height)))
     (dolist (s list-of-ships) (position-ship s board))
     board))
@@ -51,7 +51,7 @@ The first tracks ship positions, the second tracks what shots have been taken al
 ;;;;;;;;;;;;;;;;;;;; display
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod echo ((b board) (p player))
-  (with-html-output-to-string (*standard-output* nil :indent t)
+  (with-html-output (*standard-output* nil :indent t)
     (:table :id "game-board"
 	    (mapc (lambda (row) 
 		    (htm (:tr (mapc (lambda (s) (echo s p)) row)))) 
@@ -59,7 +59,8 @@ The first tracks ship positions, the second tracks what shots have been taken al
 
 ;;;;;;;;;;;;;;;;;;;; Actions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod fire ((b board) x y)
-  (let ((result (if (empty-space-at? b x y) :miss :hit)))
-    (setf (move (space-at b x y)) result)
+(defmethod fire ((g game) (p player) x y)
+  (let ((result (if (empty-space-at? (board g) x y) :miss :hit)))
+    (push (make-instance 'move :player p :x x :y y) (history g))
+    (setf (move (space-at (board g) x y)) result)
     result))

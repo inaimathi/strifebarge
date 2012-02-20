@@ -20,5 +20,5 @@
 
 (define-easy-handler (turn :uri "/turn") (x y)
   (assert (and (stringp x) (stringp y)))
-  (fire (board *game*) (parse-integer x) (parse-integer y))
+  (fire *game* (car (players *game*)) (parse-integer x) (parse-integer y))
   (redirect "/show-game"))

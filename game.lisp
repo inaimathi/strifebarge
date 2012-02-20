@@ -11,5 +11,9 @@
     (make-instance 'game :board board :players players :turn-stack players)))
 
 (defmethod echo ((g game) (p player))
-  (with-html-output (*standard-output* nil :prologue t :indent t)
-    (echo (board g) p)))
+  (with-html-output-to-string (*standard-output* nil :prologue t :indent t)
+    (:html (:body
+	    (:div :class "game-status"
+		  (:p "Current Turn: " (str (car (players g))))
+		  (dolist (p (players g)) (htm (:p (str p)))))
+	    (echo (board g) p)))))
