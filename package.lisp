@@ -12,3 +12,4 @@
 (in-package #:strifebarge)
 
 (defparameter *web-server* (start (make-instance 'hunchentoot:easy-acceptor :port 5050))) 
+(defparameter *empty-space* 'o)
