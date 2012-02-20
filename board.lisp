@@ -4,7 +4,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun empty-grid (width height)
   (loop for y from 0 to height
-	collect (loop for x from 0 to width collect (make-instance 'board-space :x x :y y))))
+	collect (loop for x from 0 to width collect (make-space x y))))
 
 (defun empty-board (width height)
   "Returns a collection of [height] rows, each of length [width].
@@ -56,11 +56,3 @@ The first tracks ship positions, the second tracks what shots have been taken al
 	    (mapc (lambda (row) 
 		    (htm (:tr (mapc (lambda (s) (echo s p)) row)))) 
 		  (spaces b)))))
-
-;;;;;;;;;;;;;;;;;;;; Actions
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod fire ((g game) (p player) x y)
-  (let ((result (if (empty-space-at? (board g) x y) :miss :hit)))
-    (push (make-instance 'move :player p :x x :y y) (history g))
-    (setf (move (space-at (board g) x y)) result)
-    result))

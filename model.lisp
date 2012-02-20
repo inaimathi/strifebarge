@@ -16,6 +16,9 @@
    (x :reader x :initarg :x)
    (y :reader y :initarg :y)))
 
+(defclass hit (move) ())
+(defclass miss (move) ())
+
 (defclass player ()
   ((score :accessor score :initform 0)
    (sunken :accessor sunken :initarg :sunken)
@@ -35,5 +38,6 @@
 (defclass game ()
   ((board :accessor board :initarg :board)
    (players :accessor players :initarg :players)
+   (waiting-for :accessor waiting-for :initarg :waiting-for)
    (turn-stack :accessor turn-stack :initarg :turn-stack)
    (history :accessor history :initform nil)))
