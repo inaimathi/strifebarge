@@ -11,6 +11,6 @@
                #:clsql)
   :components ((:file "package")
 	       (:file "util")
-	       (:file "model") (:file "board") (:file "game")
+	       (:file "model") (:file "space") (:file "board") (:file "game")
                (:file "strifebarge")))
 

@@ -16,11 +16,16 @@
    (sunken :accessor sunken :initarg :sunken)
    (ships :accessor ships :initarg :ships)))
 
+(defclass board-space ()
+  ((x :reader x :initarg :x)
+   (y :reader y :initarg :y)
+   (contents :accessor contents :initform nil)
+   (move :accessor move :initform nil)))
+
 (defclass board ()
   ((width :reader width :initarg :width)
    (height :reader height :initarg :height)
-   (spaces :accessor spaces :initarg :spaces)
-   (moves :accessor moves :initarg :moves)))
+   (spaces :accessor spaces :initarg :spaces)))
 
 (defclass game ()
   ((board :accessor board :initarg :board)

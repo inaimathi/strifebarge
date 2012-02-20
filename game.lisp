@@ -6,7 +6,7 @@
 	  (mapcar (lambda (s) (make-instance s :player p)) ship-types))
     p))
 
-(defun new-game (&rest players)
+(defun make-game (&rest players)
   (let ((board (make-board (mapcan #'ships players))))
     (make-instance 'game :board board :players players :turn-stack players)))
 
