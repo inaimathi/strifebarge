@@ -4,7 +4,6 @@
   ((space-count :reader space-count :initarg :space-count)
    (player :reader player :initarg :player)
    (damage :accessor damage :initform 0)
-   (coords :accessor coords :initarg :coords)
    (direction :accessor direction :initarg :direction)))
 
 (defclass carrier (ship) ((space-count :initform 5)))

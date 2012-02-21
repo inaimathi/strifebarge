@@ -7,8 +7,6 @@
 	collect (loop for x from 0 to width collect (make-space x y))))
 
 (defun empty-board (width height)
-  "Returns a collection of [height] rows, each of length [width].
-Each cell is independant (which is why the board isn't built with make-list)"
   (make-instance 'board 
 		 :spaces (empty-grid width height)
 		 :width width
@@ -31,17 +29,12 @@ Each cell is independant (which is why the board isn't built with make-list)"
 	 (direction (pick '(:vertical :horizontal)))
 	 (ship-spaces (assign-ship-spaces s direction x y)))
     (if (every (lambda (p) (empty-space-at? b (car p) (cdr p))) ship-spaces)
-	(progn 
-	  (setf (coords s) ship-spaces
-		(direction s) direction)
-	  (loop for (x . y) in ship-spaces
-		do (setf (contents (space-at b x y)) s)))
+	(progn (setf (direction s) direction)
+	       (loop for (space-x . space-y) in ship-spaces
+		     do (setf (contents (space-at b space-x space-y)) s)))
 	(position-ship s b))))
 
 (defun make-board (list-of-ships)
-  "Returns a board object. 
-A board is both a ship-placement map and a moves-map.
-The first tracks ship positions, the second tracks what shots have been taken already."
   (let* ((width (+ 5 (* 2 (length list-of-ships))))
 	 (height (+ 5 (* 2 (length list-of-ships))))
 	 (board (empty-board width height)))

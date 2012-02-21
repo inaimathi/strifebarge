@@ -1,4 +1,5 @@
 ;;;; strifebarge.lisp
+
 (in-package #:strifebarge)
 
 (defparameter *game* nil)
