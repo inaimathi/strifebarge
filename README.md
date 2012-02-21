@@ -1,6 +1,8 @@
 # StrifeBarge
 ###### Attack of the strategic thesaurus
 
+This is an HTTP, multiplayer implementation of the classic [battleship pen & paper](http://en.wikipedia.org/wiki/Battleship_(game)) game.
+
 ### Notes
 
 - Do not attempt to play it yet; it only supports one game at a time and barfs at things which have no business being barfed at.
