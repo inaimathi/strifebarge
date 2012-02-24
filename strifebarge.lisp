@@ -22,9 +22,29 @@
   (setf (session-value :player) (pop (waiting-for *game*)))
   (redirect "/show-game"))
 
+(define-easy-handler (update-map :uri "/update-map") ()
+  (assert (not (null (session-value :player))))
+  (setf (header-out :cache-control) "no-cache"
+	(content-type*) "text/event-stream")
+  (emit-record *game* (session-value :player)))
+
 (define-easy-handler (show-game :uri "/show-game") ()
   (assert (not (null (session-value :player))))
-  (echo *game* (session-value :player)))
+  (html-to-str
+    (:html (:head
+	    (:script :type "text/javascript" :src "/js/jquery-1.7.1.min.js")
+	    (:script :type "text/javascript"
+		     (str (ps 
+			    (define-event-source source "update-map")
+			    (define-event-listener source "turn"
+			      (lambda (e) ($ "#turn-marker" (text (chain e data)))))
+			    (define-event-listener source "shot"
+			      (lambda (e) 
+				(let ((d (parse-json (chain e data))))
+				  ($ "#debug" (text (@ d "x")))
+				  ($ "#game-board tr" (eq (@ d "y")) (children "td") (eq (@ d "x"))
+				     (text (@ d "text"))))))))))
+	   (:body (:div :id "turn-marker") (echo *game* (session-value :player))))))
 
 (define-easy-handler (quit-game :uri "/quit-game") ()
   (assert (not (null (session-value :player))))

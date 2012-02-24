@@ -2,7 +2,7 @@
 
 (defpackage #:strifebarge
   (:use #:cl #:cl-who #:clsql #:hunchentoot #:parenscript)
-  (:import-from #:swank #:find-definition-for-thing)
+  (:import-from #:json #:encode-json-to-string #:decode-json-from-string)
   (:import-from #:ironclad 
    		#:encrypt-in-place #:decrypt-in-place #:make-cipher #:digest-sequence 
 		#:octets-to-integer #:integer-to-octets
@@ -11,4 +11,8 @@
 
 (in-package #:strifebarge)
 
-(defparameter *web-server* (start (make-instance 'hunchentoot:easy-acceptor :port 5050)))
+;;;;;;;;;;;;;;;;;;;; config variable
+
+(defparameter *server-port* 5050)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

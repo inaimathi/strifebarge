@@ -14,14 +14,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod echo ((s board-space) (p player))
   (with-html-output (*standard-output* nil :indent t)
-    (:td (cond ((move s) (echo (move s) p))
+    (:td (cond ((move s) (str (echo (move s) p)))
 	       ((and (contents s) (eq (player (contents s)) p)) (str "#"))
 	       (t (htm (:a :href (format nil "/turn?x=~a&y=~a" (x s) (y s)) "~")))))))
 
-(defmethod echo ((m hit) (p player))
-  (with-html-output (*standard-output* nil :indent t)
-    "X"))
+(defmethod echo ((m hit) (p player)) "X")
 
-(defmethod echo ((m miss) (p player))
-  (with-html-output (*standard-output* nil :indent t)
-    "O"))
+(defmethod echo ((m miss) (p player)) "O")

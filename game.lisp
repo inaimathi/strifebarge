@@ -15,9 +15,21 @@
 
 ;;;;;;;;;;;;;;;;;;;; display
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod echo ((g game) (p player))
-  (with-html-output-to-string (*standard-output* nil :prologue t :indent t)
-    (:html (:body (echo (board g) p)))))
+(defmethod echo ((g game) (p player)) (echo (board g) p))
+
+(defmethod emit-record ((g game) (p player))
+  (apply #'concatenate 
+	 (cons 'string (mapcar #'emit-record (reverse (history g))))))
+
+(defmethod emit-record ((m hit) (p player))
+  (format nil "event: shot~%data: ~a~%~%event: turn~%data: ~a~%~%"
+	  (encode-json-to-string `((x . ,(x m)) (y . ,(y m)) (text . "X")))
+	  (if (eq (player m) p) "Their Turn" "Your Turn")))
+
+(defmethod emit-record ((m miss) (p player))
+  (format nil "event: shot~%data: ~a~%~%event: turn~%data: ~a~%~%"
+	  (encode-json-to-string `((x . ,(x m)) (y . ,(y m)) (text . "O")))
+	  (if (eq (player m) p) "Their Turn" "Your Turn")))
 
 ;;;;;;;;;;;;;;;;;;;; actions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
