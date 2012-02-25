@@ -30,7 +30,16 @@ on-receive is a function called when a satisfying message is received. It should
 (defpsmacro post-to (target-page data-hash on-success) ; data hash declared like (create :k v ...)
   "target-page is a page url.
 data-hash is the data sent along as the post request; declared as (create :k v ...)
-on-success is a function to run on a successful response"
-  `(chain $ (post (page-url ,target-page)
+on-success is a function to run on a successful response; 
+it should expect a single argument (the data returned by the target handler)"
+  `(chain $ (post ,target-page
 		  ,data-hash
 		  ,on-success)))
+
+(defpsmacro $-space-at ((x y) &rest chains)
+  `($ "#game-board tr" (eq ,y) (children "td") (eq ,x) ,@chains))
+
+(defpsmacro send-shot (x y)
+  `(post-to "/turn" (create :x ,x :y ,y) 
+	    (lambda (data)
+	      ($-space-at (,x ,y) (text data)))))

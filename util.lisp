@@ -4,6 +4,9 @@
   "Randomly selects an element from the given list with equal probability."
   (nth (random (length a-list)) a-list))
 
+(defun range (a b)
+  (loop for i from a to b collect i))
+
 (defmacro web-folders (&body body)
   "Sets up folder dispatchers for the given folders"
   `(progn ,@(mapcar #'(lambda (f) 
@@ -17,3 +20,9 @@
 (defmacro html-to-str (&body body)
   "Returns HTML as a string, as well as printing to standard-out"
   `(with-html-output-to-string (*standard-output*) ,@body))
+
+(defmacro define-ship (name length &optional (width 1))
+  `(defclass ,name (ship) 
+     ((len :initform ,length)
+      (wid :initform ,width)
+      (space-count :initform ,(* length width)))))

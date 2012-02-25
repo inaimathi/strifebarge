@@ -14,5 +14,5 @@
 ;;;;;;;;;;;;;;;;;;;; config variable
 
 (defparameter *server-port* 5050)
-
+(defparameter *board-square-size* 45)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

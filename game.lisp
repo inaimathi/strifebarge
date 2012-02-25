@@ -19,7 +19,9 @@
 
 (defmethod emit-record ((g game) (p player))
   (apply #'concatenate 
-	 (cons 'string (mapcar #'emit-record (reverse (history g))))))
+	 (cons 'string 
+	       (mapcar (lambda (r) (emit-record r p)) 
+		       (reverse (history g))))))
 
 (defmethod emit-record ((m hit) (p player))
   (format nil "event: shot~%data: ~a~%~%event: turn~%data: ~a~%~%"

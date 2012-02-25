@@ -13,10 +13,14 @@
 ;;;;;;;;;;;;;;;;;;;; display
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod echo ((s board-space) (p player))
-  (with-html-output (*standard-output* nil :indent t)
+  (html-to-stout 
     (:td (cond ((move s) (str (echo (move s) p)))
-	       ((and (contents s) (eq (player (contents s)) p)) (str "#"))
-	       (t (htm (:a :href (format nil "/turn?x=~a&y=~a" (x s) (y s)) "~")))))))
+	       ((and (contents s) (eq (player (contents s)) p)) 
+		(htm (:div :class (format nil "ship ~(~a~) ~(~a~)" (type-of (contents s)) (direction (contents s)))
+			   :style (format nil "background-position: ~apx ~apx;" 
+					  (- (* *board-square-size* (sprite-y s)))
+					  (* *board-square-size* (sprite-x s))))))
+	       (t (htm (:a :href "#" :onclick (format nil "sendShot(~a, ~a);" (x s) (y s)) "~")))))))
 
 (defmethod echo ((m hit) (p player)) "X")
 

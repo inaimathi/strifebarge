@@ -1,14 +1,16 @@
 (in-package :strifebarge)
 
 (defclass ship ()
-  ((space-count :reader space-count :initarg :space-count)
+  ((wid :reader wid :initarg :wid :initform 1)
+   (len :reader len :initarg :len)
+   (space-count :accessor space-count :initarg :space-count)
    (player :reader player :initarg :player)
    (damage :accessor damage :initform 0)
    (direction :accessor direction :initarg :direction)))
 
-(defclass carrier (ship) ((space-count :initform 5)))
-(defclass cruiser (ship) ((space-count :initform 3)))
-(defclass destroyer (ship) ((space-count :initform 2)))
+(define-ship carrier 5 2)
+(define-ship cruiser 3)
+(define-ship destroyer 2)
 
 (defclass move ()
   ((player :reader player :initarg :player)
@@ -26,6 +28,8 @@
 (defclass board-space ()
   ((x :reader x :initarg :x)
    (y :reader y :initarg :y)
+   (sprite-x :accessor sprite-x :initarg sprite-x)
+   (sprite-y :accessor sprite-y :initarg sprite-y)
    (contents :accessor contents :initform nil)
    (move :accessor move :initform nil)))
 
