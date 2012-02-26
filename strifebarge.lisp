@@ -16,8 +16,7 @@
 
 (define-easy-handler (new-game :uri "/new-game") (player-count)
   (let* ((p-count (if player-count (parse-integer player-count) 2)) 
-	 (players (loop for i from 1 to p-count
-			collect (make-player 'carrier 'cruiser 'destroyer))))
+	 (players (loop repeat p-count collect (make-player 'carrier 'cruiser 'destroyer))))
     (setf *game* (apply #'make-game players))
     (redirect "/join-game")))
 
@@ -40,7 +39,9 @@
 	    (:script :type "text/javascript" :src "/js/jquery-1.7.1.min.js")
 	    (:script :type "text/javascript" :src "/js/strifebarge.js")
 	    (:link :rel "stylesheet" :type "text/css" :href "/css/strifebarge.css"))
-	   (:body (:div :id "turn-marker") (echo *game* (session-value :player))))))
+	   (:body (:div :id "player-console" 
+			(:div :id "turn-marker" (if (turn-p *game*) "Your turn" "Their turn"))) 
+		  (echo *game* (session-value :player))))))
 
 (define-easy-handler (quit-game :uri "/quit-game") ()
   (assert (not (null (session-value :player))))
@@ -49,8 +50,7 @@
   "You have quit the game")
 
 (define-easy-handler (turn :uri "/turn") (x y)
-  (assert (and (eq (car (turn-stack *game*)) (session-value :player))
-	       (stringp x) (stringp y)))
+  (assert (and (turn-p *game*) (stringp x) (stringp y)))
   (advance-turn *game*)
   (echo (fire *game* (session-value :player) (parse-integer x) (parse-integer y)) 
 	(session-value :player)))

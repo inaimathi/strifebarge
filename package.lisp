@@ -1,7 +1,7 @@
 ;;;; package.lisp
 
 (defpackage #:strifebarge
-  (:use #:cl #:cl-who #:clsql #:hunchentoot #:parenscript)
+  (:use #:cl #:cl-who #:cl-css #:clsql #:hunchentoot #:parenscript)
   (:import-from #:json #:encode-json-to-string #:decode-json-from-string)
   (:import-from #:ironclad 
    		#:encrypt-in-place #:decrypt-in-place #:make-cipher #:digest-sequence 
@@ -14,5 +14,5 @@
 ;;;;;;;;;;;;;;;;;;;; config variable
 
 (defparameter *server-port* 5050)
-(defparameter *board-square-size* 45)
+(defparameter *board-square-size* 35)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

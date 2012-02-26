@@ -3,6 +3,8 @@
 (defclass ship ()
   ((wid :reader wid :initarg :wid :initform 1)
    (len :reader len :initarg :len)
+   (x :accessor x :initarg :x)
+   (y :accessor y :initarg :y)
    (space-count :accessor space-count :initarg :space-count)
    (player :reader player :initarg :player)
    (damage :accessor damage :initform 0)
@@ -17,7 +19,7 @@
    (x :reader x :initarg :x)
    (y :reader y :initarg :y)))
 
-(defclass hit (move) ())
+(defclass hit (move) ((ship :accessor ship :initarg :ship)))
 (defclass miss (move) ())
 
 (defclass player ()
@@ -28,8 +30,6 @@
 (defclass board-space ()
   ((x :reader x :initarg :x)
    (y :reader y :initarg :y)
-   (sprite-x :accessor sprite-x :initarg sprite-x)
-   (sprite-y :accessor sprite-y :initarg sprite-y)
    (contents :accessor contents :initform nil)
    (move :accessor move :initform nil)))
 

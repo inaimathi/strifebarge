@@ -9,9 +9,13 @@
     p))
 
 (defun make-game (&rest players)
-  (let ((board (make-board (mapcan #'ships players))))
+  (let ((board (make-board (mapcan-f #'ships players))))
     (make-instance 'game :board board :players players :waiting-for players :turn-stack players)))
 
+;;;;;;;;;;;;;;;;;;;; predicates
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod turn-p ((g game) &optional (player (session-value :player))) 
+  (eq (car (turn-stack g)) player))
 
 ;;;;;;;;;;;;;;;;;;;; display
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -25,12 +29,12 @@
 
 (defmethod emit-record ((m hit) (p player))
   (format nil "event: shot~%data: ~a~%~%event: turn~%data: ~a~%~%"
-	  (encode-json-to-string `((x . ,(x m)) (y . ,(y m)) (text . "X")))
+	  (encode-json-to-string `((x . ,(x m)) (y . ,(y m)) (text . ,(echo m p))))
 	  (if (eq (player m) p) "Their Turn" "Your Turn")))
 
 (defmethod emit-record ((m miss) (p player))
   (format nil "event: shot~%data: ~a~%~%event: turn~%data: ~a~%~%"
-	  (encode-json-to-string `((x . ,(x m)) (y . ,(y m)) (text . "O")))
+	  (encode-json-to-string `((x . ,(x m)) (y . ,(y m)) (text . ,(echo m p))))
 	  (if (eq (player m) p) "Their Turn" "Your Turn")))
 
 ;;;;;;;;;;;;;;;;;;;; actions
@@ -41,9 +45,11 @@
       (setf (turn-stack g) (players g))))
 
 (defmethod fire ((g game) (p player) x y)
-  (let ((result (make-instance 
-		 (if (empty-space-at? (board g) x y) 'miss 'hit)
-		 :player p :x x :y y)))
+  (let* ((s (space-at (board g) x y)) 
+	 (result (make-instance 
+		  (if (empty-space? s) 'miss 'hit)
+		  :player p :x x :y y)))
     (push result (history g))
-    (setf (move (space-at (board g) x y)) result)
+    (unless (empty-space? s) (setf (ship result) (contents s)))
+    (setf (move s) result)
     result))

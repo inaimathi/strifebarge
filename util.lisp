@@ -7,6 +7,12 @@
 (defun range (a b)
   (loop for i from a to b collect i))
 
+(defun board-scale (num) (* *board-square-size* num))
+
+(defun mapcan-f (fn a-list)
+  "Functional implementation of unary mapcan"
+  (loop for i in a-list append (funcall fn i)))
+
 (defmacro web-folders (&body body)
   "Sets up folder dispatchers for the given folders"
   `(progn ,@(mapcar #'(lambda (f) 
