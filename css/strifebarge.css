@@ -1,7 +1,0 @@
-#game-board { border-spacing: 0px; }
-#game-board td { width: 45px; height: 45px; padding: 0px; }
-#game-board .ship { width: 100%; height: 100%; background-image: url('/img/spaceships/8.png'); }
-#game-board .ship.vertical { transform: rotate(90deg); -webkit-transform: rotate(90deg); }
-
-#game-board .ship.carrier { background-image: url('/img/spaceships/1.png'); }
-#game-board .ship.destroyer { background-image: url('/img/spaceships/2.png'); }
