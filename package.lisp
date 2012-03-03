@@ -3,6 +3,7 @@
 (defpackage #:strifebarge
   (:use #:cl #:cl-who #:cl-css #:clsql #:hunchentoot #:parenscript)
   (:import-from #:json #:encode-json-to-string #:decode-json-from-string)
+  (:import-from #:cl-ppcre #:scan-to-strings)
   (:import-from #:ironclad 
    		#:encrypt-in-place #:decrypt-in-place #:make-cipher #:digest-sequence 
 		#:octets-to-integer #:integer-to-octets

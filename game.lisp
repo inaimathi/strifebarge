@@ -21,21 +21,36 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod echo ((g game) (p player)) (echo (board g) p))
 
-(defmethod emit-record ((g game) (p player))
-  (apply #'concatenate 
-	 (cons 'string 
-	       (mapcar (lambda (r) (emit-record r p)) 
-		       (reverse (history g))))))
+(defmethod echo-console ((g game) (p player))
+  (html-to-stout (:div :id "player-console" 
+		       (:div :id "turn-marker" (str (if (turn-p *game*) "Your turn" "Their turn")))
+		       (echo-stats p)
+		       (:a :class "menu-item" :href "/quit-game" "Quit Game"))))
 
-(defmethod emit-record ((m hit) (p player))
-  (format nil "event: shot~%data: ~a~%~%event: turn~%data: ~a~%~%"
-	  (encode-json-to-string `((x . ,(x m)) (y . ,(y m)) (text . ,(echo m p))))
-	  (if (eq (player m) p) "Their Turn" "Your Turn")))
+(defmethod echo-stats ((p player))
+  (html-to-stout 
+    (:div :class "player-ships"
+	  (loop for s in (ships p)
+		do (str (echo-stats s))))))
 
-(defmethod emit-record ((m miss) (p player))
-  (format nil "event: shot~%data: ~a~%~%event: turn~%data: ~a~%~%"
-	  (encode-json-to-string `((x . ,(x m)) (y . ,(y m)) (text . ,(echo m p))))
-	  (if (eq (player m) p) "Their Turn" "Your Turn")))
+(defmethod echo-stats ((s ship))
+  (html-to-str
+    (:div :id (instance-to-id s) :class "ship-stats" (:img :src (image-file s))
+	  (htm (:div :class "total-hp" 
+		     (:div :class "hp-remaining" 
+			   :style (inline-css `(:width ,(format nil "~a%" (hp-% s))))
+			   (:span :class "num-hp" (str (remaining-hp s))) "/" (:span :class "num-total-hp" (str (hp s)))))))))
+
+(defmethod remaining-hp ((s ship))
+  (- (space-count s) (damage s)))
+
+(defmethod hp ((s ship)) (space-count s))
+
+(defmethod hp-% ((s ship))
+  (round (* 100 (/ (remaining-hp s) (space-count s)))))
+
+(defmethod to-json ((s ship))
+  (encode-json-to-string `((ship-id . ,(instance-to-id s)) (hp . ,(remaining-hp s)) (percent . ,(hp-% s)))))
 
 ;;;;;;;;;;;;;;;;;;;; actions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -45,11 +60,15 @@
       (setf (turn-stack g) (players g))))
 
 (defmethod fire ((g game) (p player) x y)
-  (let* ((s (space-at (board g) x y)) 
+  (let* ((space (space-at (board g) x y))
 	 (result (make-instance 
-		  (if (empty-space? s) 'miss 'hit)
+		  (if (empty-space? space) 'miss 'hit)
 		  :player p :x x :y y)))
-    (push result (history g))
-    (unless (empty-space? s) (setf (ship result) (contents s)))
-    (setf (move s) result)
+    (push-record g "shot" (to-json result))
+    (unless (empty-space? space)
+      (let ((ship (contents space)))
+	(setf (ship result) ship)
+	(incf (damage ship))
+	(push-record g "ship-damage" (to-json ship))))
+    (setf (move space) result)
     result))

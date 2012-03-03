@@ -70,10 +70,12 @@ ensuring there are no collisions."
 			  (htm (:tr (mapc (lambda (s) (echo s p)) row)))) 
 			(spaces b))))))
 
+(defmethod image-file ((s ship)) (format nil "/img/ships/~(~a~).png" (type-of s)))
+
 (defmethod echo ((s ship) (p player))
   (let ((direction (direction s)))
     (html-to-str (:img :class "ship" 
 		       :style (inline-css `(:left ,(css-left s) :top ,(px (board-scale (y s)))
 					    :width ,(board-scale (len s)) :height ,(board-scale (wid s))
 					    ,@(when (eq :vertical direction) (css-rotate 90))))
-		       :src (format nil "/img/ships/~(~a~).png" (type-of s))))))
+		       :src (image-file s)))))

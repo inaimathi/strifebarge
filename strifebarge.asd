@@ -23,6 +23,7 @@
   :licence "AGPL v3"
   :depends-on (#:hunchentoot
                #:cl-who
+	       #:cl-ppcre
 	       #:cl-json
 	       #:ironclad
                #:parenscript
@@ -32,7 +33,7 @@
   :components ((:file "package")
 	       (:file "util") (:file "model") 
 	       (:file "js-macros") (:file "js") (:file "css")
-	       (:file "space") (:file "board") (:file "game")
+	       (:file "history-event") (:file "space") (:file "board") (:file "game")
                (:file "strifebarge")
 	       (:file "start")))
 

@@ -19,6 +19,9 @@
 			`(push (create-folder-dispatcher-and-handler ,(format nil "/~a/" f) ,(format nil "~a/" f)) *dispatch-table*))
 		    body)))
 
+(defmacro redirect-unless (predicate &optional (target "/"))
+  `(unless ,predicate (redirect ,target)))
+
 (defmacro html-to-stout (&body body)
   "Outputs HTML to standard out."
   `(with-html-output (*standard-output* nil :indent t) ,@body))
@@ -26,6 +29,14 @@
 (defmacro html-to-str (&body body)
   "Returns HTML as a string, as well as printing to standard-out"
   `(with-html-output-to-string (*standard-output*) ,@body))
+
+(defun instance-to-id (instance)
+  (aref (nth-value 1 (scan-to-strings "{\(.*?\)}" (format nil "~a" instance))) 0))
+
+(defun take (num a-list)
+  (if (> (length a-list) num)
+      (subseq a-list 0 num)
+      a-list))
 
 (defmacro define-ship (name length &optional (width 1))
   `(defclass ,name (ship) 

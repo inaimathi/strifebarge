@@ -6,6 +6,14 @@
 
 	      (define-event-listener source "turn"
 		(lambda (e) ($ "#turn-marker" (text (chain e data)))))
+
+	      (define-event-listener source "ship-damage"
+		(lambda (e)
+		  (let* ((d (parse-json (chain e data))) 
+			 (ship-id (+ "#" (@ d "shipId"))))
+		    ($ ship-id (find ".num-hp") (text (@ d "hp")))
+		    ($ ship-id (find ".hp-remaining") (width (+ (@ d "percent") "%"))))))
+
 	      (define-event-listener source "shot"
 		(lambda (e) 
 		  (let ((d (parse-json (chain e data))))

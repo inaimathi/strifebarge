@@ -22,6 +22,11 @@
 (defclass hit (move) ((ship :accessor ship :initarg :ship)))
 (defclass miss (move) ())
 
+(defclass history-event ()
+  ((id :reader id :initarg :id)
+   (event-type :reader event-type :initarg :event-type)
+   (message :reader message :initarg :message)))
+
 (defclass player ()
   ((score :accessor score :initform 0)
    (sunken :accessor sunken :initarg :sunken)
