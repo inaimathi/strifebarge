@@ -34,6 +34,6 @@ Media is included from OpenGameArt.org. This includes
 - [crosshair icons](http://opengameart.org/content/crosshairs-and-reticles) (public domain by hackcraft.de)
 - [explosion](http://opengameart.org/content/explosion) (public domain by Cuzco)
 - [spaceship images](http://opengameart.org/content/spaceships-top-down) (dual CC-BY-SA/GPL by Skorpio)
-- [star-field background](http://opengameart.org/content/galaxy-skybox) (dual CC-BY/CC-BY-SA by hc)
+- [star-field background](http://opengameart.org/content/galaxy-skybox) (dual CC-BY/CC-BY-SA by hackcraft.de)
 
 more to come, I'm sure.
