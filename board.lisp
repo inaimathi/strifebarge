@@ -16,9 +16,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod space-at ((b board) x y) (nth x (nth y (spaces b))))
 
-(defmacro if-vertical (do-if do-unless)
-  `(if (eq :vertical direction) ,do-if ,do-unless))
-
 (defun create-point (direction x y i j)
   (if (eq :vertical direction)
       (list (+ i x) (+ j y))
