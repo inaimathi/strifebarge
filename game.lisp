@@ -17,6 +17,31 @@
 (defmethod turn-p ((g game) &optional (player (session-value :player))) 
   (eq (car (turn-stack g)) player))
 
+;;;;;;;;;;;;;;;;;;;; history related
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; creation
+(defmethod to-json ((m move))
+  (encode-json-to-string `((x . ,(x m)) (y . ,(y m)) 
+			   (text . ,(echo m (session-value :player))))))
+
+(defmethod push-record ((g game) event-type message)
+  (push (make-instance 'history-event
+		       :id (length (history g))
+		       :event-type event-type
+		       :message message)
+	(history g)))
+
+;;; display
+(defmethod emit-record ((g game) (p player))
+  (apply #'concatenate 
+	 (cons 'string 
+	       (mapcar (lambda (r) (emit-record r p)) 
+		       (reverse (take 10 (history g)))))))
+
+(defmethod emit-record ((e history-event) (p player))
+  (format nil "id: ~a~%event: ~a~%data: ~a~%~%"
+	  (id e) (event-type e) (message e)))
+
 ;;;;;;;;;;;;;;;;;;;; display
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod echo ((g game) (p player)) (echo (board g) p))
@@ -32,25 +57,6 @@
     (:div :class "player-ships"
 	  (loop for s in (ships p)
 		do (str (echo-stats s))))))
-
-(defmethod echo-stats ((s ship))
-  (html-to-str
-    (:div :id (instance-to-id s) :class "ship-stats" (:img :src (image-file s))
-	  (htm (:div :class "total-hp" 
-		     (:div :class "hp-remaining" 
-			   :style (inline-css `(:width ,(format nil "~a%" (hp-% s))))
-			   (:span :class "num-hp" (str (remaining-hp s))) "/" (:span :class "num-total-hp" (str (hp s)))))))))
-
-(defmethod remaining-hp ((s ship))
-  (- (space-count s) (damage s)))
-
-(defmethod hp ((s ship)) (space-count s))
-
-(defmethod hp-% ((s ship))
-  (round (* 100 (/ (remaining-hp s) (space-count s)))))
-
-(defmethod to-json ((s ship))
-  (encode-json-to-string `((ship-id . ,(instance-to-id s)) (hp . ,(remaining-hp s)) (percent . ,(hp-% s)))))
 
 ;;;;;;;;;;;;;;;;;;;; actions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;

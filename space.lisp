@@ -5,8 +5,9 @@
 (defun make-space (x y) 
   (make-instance 'board-space :x x :y y))
 
-;;;;;;;;;;;;;;;;;;;; predicates
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;; utility
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod space-at ((b board) x y) (nth x (nth y (spaces b))))
 (defmethod empty-space? ((s board-space)) (null (contents s)))
 (defmethod empty-space-at? ((b board) x y) (null (contents (space-at b x y))))
 

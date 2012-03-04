@@ -33,7 +33,7 @@
   :components ((:file "package")
 	       (:file "util") (:file "model") 
 	       (:file "js-macros") (:file "js") (:file "css")
-	       (:file "history-event") (:file "space") (:file "board") (:file "game")
+	       (:file "space") (:file "ship") (:file "board") (:file "game")
                (:file "strifebarge")
 	       (:file "start")))
 
