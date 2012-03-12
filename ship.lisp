@@ -35,8 +35,8 @@ ensuring there are no collisions."
 			  (setf (contents current-space) s))))
 	(position-ship s b))))
 
-;;;;;;;;;;;;;;;;;;;; getters
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;; getters/predicates
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod remaining-hp ((s ship))
   (- (space-count s) (damage s)))
 
@@ -47,6 +47,8 @@ ensuring there are no collisions."
 
 (defmethod image-file ((s ship)) (format nil "/img/ships/~(~a~).png" (type-of s)))
 
+(defmethod dead-p ((s ship))
+  (zerop (- (space-count s) (damage s))))
 ;;;;;;;;;;;;;;;;;;;; echo methods
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod echo-stats ((s ship))

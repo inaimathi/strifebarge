@@ -12,10 +12,19 @@
   (let ((board (make-board (mapcan-f #'ships players))))
     (make-instance 'game :board board :players players :waiting-for players :turn-stack players)))
 
-;;;;;;;;;;;;;;;;;;;; predicates
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;; predicates and getters
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmethod ships ((g game)) 
+  (mapcan-f #'ships (players g)))
+
+(defmethod opponents ((g game) &optional (player (session-value :player)))
+  (remove player (players g)))
+
 (defmethod turn-p ((g game) &optional (player (session-value :player))) 
   (eq (car (turn-stack g)) player))
+
+(defmethod dead-p ((p player))
+  (every #'dead-p (ships p)))
 
 ;;;;;;;;;;;;;;;;;;;; history related
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -23,6 +32,20 @@
 (defmethod to-json ((m move))
   (encode-json-to-string `((x . ,(x m)) (y . ,(y m)) 
 			   (text . ,(echo m (session-value :player))))))
+
+(defmethod to-alist ((p player))
+  `((name . ,(instance-to-id p)) 
+    (eliminated . ,(if (dead-p p) :true :false))
+    (ships . ,(loop for s in (ships p)
+		    collect `(,(type-of s) . ,(if (dead-p s) :true :false))))))
+
+(defmethod to-json ((p player))
+  (encode-json-to-string (to-alist p)))
+
+(defmethod to-json ((g game))
+  (encode-json-to-string
+   `((name . ,(instance-to-id g))
+     (players . ,(mapcar #'to-alist (players g))))))
 
 (defmethod push-record ((g game) event-type message)
   (push (make-instance 'history-event
@@ -42,6 +65,12 @@
   (format nil "id: ~a~%event: ~a~%data: ~a~%~%"
 	  (id e) (event-type e) (message e)))
 
+;;; game logic
+
+(defmethod death-check ((g game) (s ship))
+  (when (dead-p s) 
+    (push-record g "ship-sunk" (to-json g))))
+
 ;;;;;;;;;;;;;;;;;;;; display
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod echo ((g game) (p player)) (echo (board g) p))
@@ -50,6 +79,7 @@
   (html-to-stout (:div :id "player-console" 
 		       (:div :id "turn-marker" (str (if (turn-p *game*) "Your turn" "Their turn")))
 		       (echo-stats p)
+		       (:div :id "ship-list")
 		       (:a :class "menu-item" :href "/quit-game" "Quit Game"))))
 
 (defmethod echo-stats ((p player))
@@ -75,6 +105,7 @@
       (let ((ship (contents space)))
 	(setf (ship result) ship)
 	(incf (damage ship))
-	(push-record g "ship-damage" (to-json ship))))
+	(push-record g "ship-damage" (to-json ship))
+	(death-check g ship)))
     (setf (move space) result)
     result))
