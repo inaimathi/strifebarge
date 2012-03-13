@@ -8,12 +8,27 @@
    		#:encrypt-in-place #:decrypt-in-place #:make-cipher #:digest-sequence 
 		#:octets-to-integer #:integer-to-octets
    		#:ascii-string-to-byte-array #:byte-array-to-hex-string)
+  (:shadowing-import-from 
+   #+openmcl-native-threads #:ccl
+   #+cmu #:pcl
+   #+sbcl #:sb-pcl
+   #+lispworks #:hcl
+   #+allegro #:mop
+   #+clisp #:clos
+   #:class-slots #:slot-definition-name)
   (:shadow #:get-time))
 
 (in-package #:strifebarge)
 
-;;;;;;;;;;;;;;;;;;;; config variable
+;;;;;;;;;;;;;;;;;;;; config variables
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defparameter *server-port* 5050)
 (defparameter *board-square-size* 35)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun board-scale (num)
+  "Used to scale ship and space representations."
+  (* *board-square-size* num))

@@ -1,6 +1,5 @@
 (in-package :strifebarge)
 
-
 ;;;;;;;;;;;;;;;;;;;; creation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun create-point (direction x y i j)
