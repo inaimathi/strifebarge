@@ -69,3 +69,12 @@ ensuring there are no collisions."
 					    :width ,(board-scale (len s)) :height ,(board-scale (wid s))
 					    ,@(when (eq :vertical direction) (css-rotate 90))))
 		       :src (image-file s)))))
+
+(defmethod echo-opponent-ship ((s ship))
+  (html-to-stout 
+    (:li :class (format nil "~a ~@[~a~]" 
+			(instance-to-id s) 
+			(when (dead-p s) "dead-ship"))  
+	 (str (if (dead-p s)
+		  (string-downcase (type-of s))
+		  "???")))))

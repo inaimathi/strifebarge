@@ -48,4 +48,5 @@
    (players :accessor players :initarg :players)
    (waiting-for :accessor waiting-for :initarg :waiting-for)
    (turn-stack :accessor turn-stack :initarg :turn-stack)
+   (finished-p :accessor finished-p :initform nil)
    (history :accessor history :initform nil)))

@@ -11,11 +11,9 @@
 		  (:link :rel "stylesheet" :type "text/css" :href "/css/strifebarge.css"))
 	   (:body (:a :class "menu-item" :href "/new-game" "New Game")
 		  (:div :id "Games Menu"
-			(loop for (name . g) in *games-table*
-			      do (htm (:li (:a :href (format nil "/join-game?game-name=~a" name)
-					       (str (format nil "~a[~a]" name (length (waiting-for g)))))))))
-		  (:p (str (format nil "~{~a~}" (list (session-value :game)
-						      (session-value :player)))))))))
+			(:ul (loop for (name . g) in *games-table*
+				   do (htm (:li (:a :href (format nil "/join-game?game-name=~a" name)
+						    (str (format nil "~a[~a]" name (length (waiting-for g))))))))))))))
 
 (define-easy-handler (new-game :uri "/new-game") (player-count)
   (if (> 20 (length *games-table*))
