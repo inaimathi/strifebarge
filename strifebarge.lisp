@@ -2,19 +2,6 @@
 
 (in-package #:strifebarge)
 
-(defparameter *game* nil)
-
-(defparameter *games-table* nil)
-
-(defun get-open-games ()
-  (loop for (name . game) in *games-table*
-	when (waiting-for game)
-	  collect name))
-
-(defun get-game (game-name)
-  (cdr (assoc game-name *games-table* :test #'string=)))
-
-(defun test-display (&rest a-list) (format nil "~{~a~^ || ~}" a-list))
 ;;;;;;;;;;;;;;;;;;;; full handlers
 ;;; (all of these either directly return, or redirect to complete pages)
 

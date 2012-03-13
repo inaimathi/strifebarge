@@ -1,5 +1,7 @@
 (in-package :strifebarge)
 
+(defparameter *games-table* nil)
+
 ;;;;;;;;;;;;;;;;;;;; game creation and setup
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun make-player (&rest ship-types)
@@ -14,6 +16,9 @@
 
 ;;;;;;;;;;;;;;;;;;;; predicates and getters
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun get-game (game-name)
+  (cdr (assoc game-name *games-table* :test #'string=)))
+
 (defmethod ships ((g game)) 
   (mapcan-f #'ships (players g)))
 
