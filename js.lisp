@@ -15,32 +15,19 @@
 		    ($ ship-id (find ".hp-remaining") (width (+ (@ d "percent") "%"))))))
 
 	      (define-event-listener source "ship-sunk"
-		(lambda (e) (update-ship-list (parse-json (chain e data)))))
+		(lambda (e) 
+		  (let ((d (parse-json (chain e data))))
+		    ($ (+ "#opponent-ships ." (@ d "id")) 
+		       (add-class "dead-ship")
+		       (text (@ d "type"))))))
+	      
+	      (define-event-listener source "player-eliminated"
+		(lambda (e) ($ (+ "#" (chain e data)) (add-class "dead-player"))))
 
 	      (define-event-listener source "shot"
 		(lambda (e) 
 		  (let ((d (parse-json (chain e data))))
 		    ($-space-at ((@ d "x") (@ d "y")) (html (@ d "text"))))))
-
-	      (defun update-ship-list (data)
-		($ "#ship-list" (html (game-table data))))
-
-	      (defun game-table (game-json)
-		(+ (who-ps-html (:h3 (@ game-json :name)))
-		   (chain (loop for p in (@ game-json :players)
-				collect (who-ps-html (:h5 (@ p :name))
-						     (:ul (ship-list (@ p :ships)))))
-			  (join ""))))
-
-	      (defun ship-list (ships)
-		(let ((acc ""))
-		  (chain $ (each ships 
-				 (lambda (k v) 
-				   (let ((name (if (= v "false") 
-						   (who-ps-html (:li k))
-						   (who-ps-html (:li :style "text-decoration: line-through;" k))))))
-				   (setf acc (+ acc name)))))
-		  acc))
 	      
 	      (defun send-shot (x y)
 		(post-to "/turn" 

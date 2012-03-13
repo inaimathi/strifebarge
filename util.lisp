@@ -13,6 +13,10 @@
   "Functional implementation of unary mapcan"
   (loop for i in a-list append (funcall fn i)))
 
+(defun shuffle (a-list)
+  (let ((l (copy-seq a-list)))
+    (sort l #'> :key (lambda (n) (declare (ignore n)) (random 1.0)))))
+
 (defmacro web-folders (&body body)
   "Sets up folder dispatchers for the given folders"
   `(progn ,@(mapcar #'(lambda (f) 

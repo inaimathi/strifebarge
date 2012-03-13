@@ -33,20 +33,6 @@
   (encode-json-to-string `((x . ,(x m)) (y . ,(y m)) 
 			   (text . ,(echo m (session-value :player))))))
 
-(defmethod to-alist ((p player))
-  `((name . ,(instance-to-id p)) 
-    (eliminated . ,(if (dead-p p) :true :false))
-    (ships . ,(loop for s in (ships p)
-		    collect `(,(type-of s) . ,(if (dead-p s) :true :false))))))
-
-(defmethod to-json ((p player))
-  (encode-json-to-string (to-alist p)))
-
-(defmethod to-json ((g game))
-  (encode-json-to-string
-   `((name . ,(instance-to-id g))
-     (players . ,(mapcar #'to-alist (players g))))))
-
 (defmethod push-record ((g game) event-type message)
   (push (make-instance 'history-event
 		       :id (length (history g))
@@ -66,21 +52,45 @@
 	  (id e) (event-type e) (message e)))
 
 ;;; game logic
-
 (defmethod death-check ((g game) (s ship))
   (when (dead-p s) 
-    (push-record g "ship-sunk" (to-json g))))
+    (push-record g "ship-sunk" 
+		 (encode-json-to-string `((:type . ,(type-of s)) 
+					  (:id . ,(instance-to-id s))))))
+  (when (dead-p (player s))
+    (push-record g "player-eliminated" (instance-to-id (player s)))))
 
 ;;;;;;;;;;;;;;;;;;;; display
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod echo ((g game) (p player)) (echo (board g) p))
 
 (defmethod echo-console ((g game) (p player))
-  (html-to-stout (:div :id "player-console" 
-		       (:div :id "turn-marker" (str (if (turn-p *game*) "Your turn" "Their turn")))
-		       (echo-stats p)
-		       (:div :id "ship-list")
-		       (:a :class "menu-item" :href "/quit-game" "Quit Game"))))
+  (html-to-stout 
+    (:div :id "player-console" 
+	  (:div :id "turn-marker" (str (if (turn-p g p) "Your turn" "Their turn")))
+	  (echo-stats p)
+	  (:div :id "opponent-ships"
+		(:h3 "Game Name")
+		(loop for a-player in (opponents g p)
+		      do (echo-opponent a-player)))
+	  (:a :class "menu-item" :href "/quit-game" "Quit Game"))))
+
+(defmethod echo-opponent ((p player))
+  (html-to-stout
+    (:h5 :id (instance-to-id p) 
+	 :class (when (dead-p p) "dead-player") 
+	 "An Opponent")
+    (:ul (loop for s in (shuffle (ships p)) 
+	       do (echo-opponent-ship s)))))
+
+(defmethod echo-opponent-ship ((s ship))
+  (html-to-stout 
+    (:li :class (format nil "~a ~@[~a~]" 
+			(instance-to-id s) 
+			(when (dead-p s) "dead-ship"))  
+	 (str (if (dead-p s)
+		  (string-downcase (type-of s))
+		  "???")))))
 
 (defmethod echo-stats ((p player))
   (html-to-stout 

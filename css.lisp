@@ -38,9 +38,11 @@
 (compile-css "css/strifebarge.css"
 	     `((body :background-color \#000 :background-image "url(/img/galaxy.png)" :padding 0px :margin 0px :font-family sans-serif)
 
+	       ;;; main menu
 	       (.menu-item :padding 10px :background-color \#eee :font-size large :font-weight bolder)
 	       ("#player-console .menu-item" :background-color transparent)
 
+	       ;;; game board
 	       (\#board-wrapper :position absolute)
 	       (\#game-board :border-spacing 0px :color \#fff)
 	       ("#game-board .miss" :font-family courier :font-size x-small)
@@ -49,10 +51,14 @@
 	       ("#game-board .shot-link" :height 100% :width 100% :display block)
 	       ("#game-board .shot-link:hover" :background-position center :border none :background-image "url(/img/crosshairs/crosshair9.png)")
 
+	       (.ship ,@(css-transform-origin 0 0) :position absolute :z-index -10000)
+	       
+	       ;;; sidebar
 	       (\#player-console :float right :width 110px :margin ,(px *board-square-size*) :padding 5px :background-color \#eee)
 	       (.ship-stats :margin-bottom 15px)
 	       (".ship-stats img" :width 60px :margin "5px 20px")
 	       (".ship-stats .total-hp" :height 25px :background-color red :width 100px :border "2px solid black")
 	       (".ship-stats .hp-remaining" :height 25px :background-color green :font-weight bold)
-
-	       (.ship ,@(css-transform-origin 0 0) :position absolute :z-index -10000)))
+	       
+	       ("#opponent-ships .dead-ship" :text-decoration line-through)
+	       ("#opponent-ships .dead-player" :text-decoration line-through :color red)))
