@@ -28,7 +28,7 @@
 	       #:ironclad
                #:parenscript
                #:cl-css
-               #:swank
+	       #:cl-actors
                #:clsql)
   :components ((:file "package")
 	       (:file "util") (:file "model") 

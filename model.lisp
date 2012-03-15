@@ -30,7 +30,8 @@
 (defclass player ()
   ((score :accessor score :initform 0)
    (sunken :accessor sunken :initarg :sunken)
-   (ships :accessor ships :initarg :ships)))
+   (ships :accessor ships :initarg :ships)
+   (turns-missed :accessor turns-missed :initform 0)))
 
 (defclass board-space ()
   ((x :reader x :initarg :x)
@@ -49,4 +50,9 @@
    (waiting-for :accessor waiting-for :initarg :waiting-for)
    (turn-stack :accessor turn-stack :initarg :turn-stack)
    (finished-p :accessor finished-p :initform nil)
-   (history :accessor history :initform nil)))
+   (history :accessor history :initform nil)
+   (turn-count :accessor turn-count :initform 0)
+
+   (turn-started :accessor turn-started :initform (now))
+   (turn-time-limit :accessor turn-time-limit :initarg :turn-time-limit :initform (make-duration :minute 3))
+   (turns-missed-allowed :accessor turns-missed-allowed :initarg :turns-missed-allowed :initform 3)))

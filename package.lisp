@@ -1,7 +1,8 @@
 ;;;; package.lisp
 
 (defpackage #:strifebarge
-  (:use #:cl #:cl-who #:cl-css #:clsql #:hunchentoot #:parenscript)
+  (:use #:cl #:cl-who #:cl-css #:clsql #:hunchentoot #:parenscript #:cl-actors)
+  (:import-from #:cl-actors #:self)
   (:import-from #:json #:encode-json-to-string #:decode-json-from-string)
   (:import-from #:cl-ppcre #:scan-to-strings)
   (:import-from #:ironclad 
@@ -25,7 +26,8 @@
 
 (defparameter *server-port* 5050)
 (defparameter *board-square-size* 35)
-
+(defparameter *game-ticker-frequency* 30 
+  "How often, in seconds, the game clock should tick")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

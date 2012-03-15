@@ -69,3 +69,6 @@ for each slot in instance."
 ;;;;;;;;;; flow control
 (defmacro redirect-unless (predicate &optional (target "/"))
   `(unless ,predicate (redirect ,target)))
+
+;;;;;;;;;; other
+(defun now () (clsql-sys::utime->time (get-universal-time)))

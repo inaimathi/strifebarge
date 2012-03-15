@@ -13,6 +13,12 @@
 (defun get-game (game-name)
   (cdr (assoc game-name *games-table* :test #'string=)))
 
+(defmethod remaining-players ((g game))
+  (remove-if #'dead-p (players g)))
+
+(defmethod current-player ((g game))
+  (car (turn-stack g)))
+
 (defmethod ships ((g game)) 
   (mapcan-f #'ships (players g)))
 
@@ -39,7 +45,18 @@
 (defmethod advance-turn ((g game))
   (if (cdr (turn-stack g))
       (pop (turn-stack g))
-      (setf (turn-stack g) (players g))))
+      (setf (turn-stack g) (players g)))
+  (setf (turn-started g) (now))
+  (incf (turn-count g)))
+
+(defmethod kick ((g game) (p player))
+  (setf (players g) (remove p (players g))))
+
+(defmethod victory-p ((g game))
+  "Returns nil if a victory is undecided, otherwise
+returns the winning player."
+  (let ((players (remaining-players g)))
+    (when (= 1 (length players)) (car players))))
 
 (defmethod fire ((g game) (p player) x y)
   (let* ((space (space-at (board g) x y))
@@ -55,3 +72,22 @@
 	(death-check g ship)))
     (setf (move space) result)
     result))
+
+;;;;;;;;;;;;;;;;;;;; ongoing actions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defactor ticker ((game-list *games-table*)) (m)
+  (sleep *game-ticker-frequency*)
+  (loop for (game-name . g) in game-list
+	do (update-state g))
+  (send self nil)
+  next)
+
+(defvar *ticker* (ticker))
+(send *ticker* nil)
+
+(defmethod update-state ((g game))
+  (when (>= (turns-missed (current-player g)) (turns-missed-allowed g)) 
+    (kick g (current-player g)))
+  (when (duration> (time-difference (turn-started g) (now)) (turn-time-limit g))
+    (incf (turns-missed (current-player g)))
+    (advance-turn g)))

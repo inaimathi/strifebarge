@@ -13,6 +13,9 @@
 (defmethod opponents ((g game) &optional (player (session-value :player)))
   (remove player (players g)))
 
+(defmethod live-opponents ((g game) &optional (player (session-value :player)))
+  (remove-if #'dead-p (opponents g player)))
+
 (defmethod dead-p ((p player))
   (every #'dead-p (ships p)))
 

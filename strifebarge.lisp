@@ -48,7 +48,8 @@
 
 (define-easy-handler (quit-game :uri "/quit-game") ()
   (redirect-unless (not (null (session-value :player))))
-  (push (session-value :player) (waiting-for (session-value :game)))
+  (unless (dead-p (session-value :player))
+    (push (session-value :player) (waiting-for (session-value :game))))
   (setf (session-value :player) nil (session-value :game) nil)
   "You have quit the game")
 

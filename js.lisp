@@ -3,7 +3,7 @@
 (compile-js "js/strifebarge.js" "strifebarge-js.lisp"
 	    (ps 
 	      (define-event-source source "update-map")
-
+	      
 	      (define-event-listener source "turn"
 		(lambda (e) ($ "#turn-marker" (text (chain e data)))))
 
